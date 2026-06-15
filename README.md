@@ -28,6 +28,34 @@ For example:
 
 ---
 
+## Why Signal Exists
+
+Years of working in high-pressure operations taught me that organizations rarely fail because they lack data—they fail because they can't consistently interpret it. Signal was built to explore how deterministic evaluation frameworks can bridge that gap by making decisions more transparent, auditable, and actionable.
+
+By demonstrating how to normalize inconsistent inputs, validate quality, and surface explainable insights, the framework models how we can scale decision support across high-stakes domains—including AI evaluation, data annotation, and operational diagnostics.
+
+---
+
+## Lessons from Building Signal
+
+* **Data quality problems are often more important than model quality problems.** If the source data is corrupted, duplicate, or misaligned, even the most advanced evaluation heuristic will yield flawed recommendations.
+* **Confidence should be communicated alongside every recommendation.** An operator must know not just *what* the system suggests, but *how complete* and *stable* the underlying evidence is.
+* **Explainability is a feature, not an afterthought.** If a user cannot audit the mathematical formulas and triggered thresholds behind a finding, they will not trust the system to act.
+* **Humans make better decisions when ambiguity is structured rather than hidden.** Hiding operational complexities behind flat color status indicators degrades decision quality.
+* **Systems should accelerate judgment, not replace it.** The framework's role is to present evidence and suggest action protocols, leaving final executive discretion to the human operator.
+
+---
+
+## Design Principles
+
+* **Deterministic over opaque**: Hard-coded math, clear thresholds, and reproducible calculations replace "black box" machine learning or opaque heuristics for auditability.
+* **Explainable over black-box**: Every diagnostic insight links directly back to the raw records and parameters that triggered it, complete with mathematical formulas and step-by-step evidence.
+* **Human-auditable outputs**: Decision support recommendations and metrics are designed to be read, verified, and exported by human operators, preserving trust.
+* **Confidence-aware recommendations**: Each decision support entry includes a confidence grading score based on data completeness and signal stability.
+* **Data quality before decision quality**: Checking schemas, bounding numeric outliers, and resolving duplicate records occurs *before* evaluating operational health.
+
+---
+
 ## System Architecture
 
 ```text
@@ -87,22 +115,6 @@ A deterministic grading module compares the telemetry against regional standards
 
 ![Deterministic Test Suite](screenshots/passing-test-suite.png)
 *Figure 2: Built-in deterministic test runner demonstrating 100% assertions pass rate on incoming sample vectors.*
-
----
-
-## Why I Built This
-
-Operators have access to enormous amounts of data but often lack structured decision support. Signal demonstrates how deterministic evaluation frameworks can normalize inconsistent inputs, validate quality, and surface actionable insights. The same architectural principles apply to AI evaluation, data annotation, and operational diagnostics.
-
----
-
-## Design Principles
-
-* **Deterministic over opaque**: Hard-coded math, clear thresholds, and reproducible calculations replace "black box" machine learning or opaque heuristics for auditability.
-* **Explainable over black-box**: Every diagnostic insight links directly back to the raw records and parameters that triggered it, complete with mathematical formulas and step-by-step evidence.
-* **Human-auditable outputs**: Decision support recommendations and metrics are designed to be read, verified, and exported by human operators, preserving trust.
-* **Confidence-aware recommendations**: Each decision support entry includes a confidence grading score based on data completeness and signal stability.
-* **Data quality before decision quality**: Checking schemas, bounding numeric outliers, and resolving duplicate records occurs *before* evaluating operational health.
 
 ---
 
