@@ -1,0 +1,10 @@
+product_name,dept_group,qty_sold,net_revenue_total,recipe_cost,retail_price
+Truffle Burger,Entrees,145,2610.00,6.50,18.00
+Crispy Calamari,Appetizers,85,1190.00,N/A,14.00
+Truffle Mac & Cheese,Sides,12,168.00,6.20,14.00
+Classic Cheeseburger,Entrees,280,4200.00,4.20,15.00
+Caesar Salad,Sides,120,1320.00,2.10,11.00
+Spicy Chicken Sandwich,Entrees,190,3040.00,4.50,16.00
+Craft IPA,Beverages,340,2720.00,1.20,8.00
+House Red Wine,Beverages,150,1500.00,2.50,10.00
+Chocolate Lava Cake,Desserts,45,405.00,1.80,9.00

@@ -1,0 +1,40 @@
+{
+  "restaurant": "Bistro Royale",
+  "analysisDate": "2026-06-15T07:17:28Z",
+  "qualityMetrics": {
+    "overallScore": 94,
+    "missingFieldsPercent": 1,
+    "duplicateRowsCount": 4,
+    "invalidNumbersCount": 2,
+    "headerMatchConfidence": 98,
+    "timestampConsistency": 100
+  },
+  "auditSummary": {
+    "healthScore": 82,
+    "weeklySavings": 927.00,
+    "annualSavings": 48204.00,
+    "recommendations": [
+      {
+        "ruleId": "Rule-31",
+        "category": "Operational Audit",
+        "title": "Server Transaction Void Outlier: Sarah T.",
+        "description": "Server Sarah T. void rate of 8.2% represents a +1.6σ deviation from the team average of 1.4%.",
+        "severityBreakdown": {
+          "financial": 3,
+          "frequency": 5,
+          "risk": 5,
+          "total": 13
+        },
+        "confidenceBreakdown": {
+          "completeness": 5,
+          "stability": 5,
+          "quality": 5,
+          "total": 5.0,
+          "label": "High"
+        },
+        "estWeeklySavings": 320.00,
+        "estAnnualSavings": 16640.00
+      }
+    ]
+  }
+}

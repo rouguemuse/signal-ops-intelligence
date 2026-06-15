@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal: Ingestion & Evaluation Framework</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Application Header -->
+  <header>
+    <div class="brand-section">
+      <h1>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); transform: rotate(90deg);">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+          <line x1="15" y1="3" x2="15" y2="21"></line>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="3" y1="15" x2="21" y2="15"></line>
+        </svg>
+        SIGNAL
+      </h1>
+      <p>Deterministic Diagnostics & Evaluation Framework</p>
+    </div>
+    
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <span class="preset-title" style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Client Presets:</span>
+      <button class="btn-secondary sample-loader-btn" data-scenario="bistro">Bistro Royale</button>
+      <button class="btn-secondary sample-loader-btn" data-scenario="urbanSlice">Urban Slice</button>
+      <button class="btn-secondary sample-loader-btn" data-scenario="morningGrind">Morning Grind</button>
+      <button class="btn-secondary sample-loader-btn" data-scenario="campusCafe">Campus Cafe</button>
+    </div>
+  </header>
+
+  <!-- Horizontal Tabs Navigation -->
+  <nav class="tabs-navigation">
+    <button class="tab-btn active" data-tab="dashboard">Evaluation Dashboard</button>
+    <button class="tab-btn" data-tab="import">Pipeline Control & Logs</button>
+    <button class="tab-btn" data-tab="visualizer">Schema Visualizer</button>
+    <button class="tab-btn" data-tab="tests">Test Vectors Suite</button>
+    <button class="tab-btn" data-tab="tables">Data Ledgers</button>
+    <button class="tab-btn" data-tab="docs">Methodology Docs</button>
+    <button class="tab-btn" data-tab="reports">Sample Reports</button>
+    <button class="tab-btn" data-tab="ai-relevance">AI Evaluation Relevance</button>
+  </nav>
+
+  <!-- Main View Area -->
+  <main>
+
+    <!-- TAB 1: EVALUATION DASHBOARD -->
+    <div id="dashboard-tab" class="tab-content">
+      
+      <!-- Formal Report Print Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem; border-bottom: 2px solid var(--text-main); padding-bottom: 0.5rem;">
+        <div>
+          <h2 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;" id="report-title-location">Client: Bistro Royale</h2>
+          <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Signal Diagnostic Audit Report & Action Protocols</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="btn-print-report" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 700;">Print / Save as PDF</button>
+          <button id="btn-export-json" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 700; background-color: var(--primary-light); color: var(--primary); border-color: var(--primary);">Export Audit JSON</button>
+          <button id="btn-export-findings" class="btn-secondary" style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: 700; background-color: #f0fdf4; color: #166534; border-color: #bbf7d0;">Export Findings MD</button>
+        </div>
+      </div>
+
+      <!-- Top Level KPIs -->
+      <div class="kpis-grid" style="margin-bottom: 1.5rem;">
+        <div class="kpi-card" id="health-card">
+          <span class="kpi-label">System Health Score</span>
+          <span class="kpi-value" id="kpi-health-score">100/100</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Projected Margin Recovery</span>
+          <span class="kpi-value" id="kpi-savings" style="color: var(--success);">$0</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Blended Prime Cost %</span>
+          <span class="kpi-value" id="kpi-prime-cost">0.0%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Average Labor SPLH</span>
+          <span class="kpi-value" id="kpi-splh">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Main Layout columns -->
+      <div class="dashboard-grid">
+        
+        <!-- Left: Action Plan Recommendations -->
+        <div class="main-column">
+          
+          <!-- Executive Action List -->
+          <div class="section-panel" style="background-color: #f8fafc; border-left: 4px solid var(--primary);">
+            <h3>Executive Priority Action Checklist</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              Implement these core corrections to recover margins. Triggered by heuristic threshold deviations:
+            </p>
+            <div style="font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.4rem; font-weight: 600;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="chk-rec-1" checked style="pointer-events: none;">
+                <label for="chk-rec-1">Stagger schedules to align shift transfers (Estimated Recovery: $8,320/yr)</label>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="chk-rec-2" checked style="pointer-events: none;">
+                <label for="chk-rec-2">Re-engineer recipe or prune low-margin menu Dogs (Estimated Recovery: $4,160/yr)</label>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="chk-rec-3" checked style="pointer-events: none;">
+                <label for="chk-rec-3">Audit transaction cash voids override rules (Estimated Recovery: $16,640/yr)</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-panel">
+            <h3>Prioritized System Evaluations</h3>
+            <div id="recommendations-list">
+              <!-- Dynamically populated anomaly cards -->
+            </div>
+          </div>
+          
+          <!-- Visualizations Area -->
+          <div class="section-panel">
+            <h3>Diagnostic Analytics</h3>
+            <div class="charts-grid">
+              
+              <!-- Labor Alignment -->
+              <div class="chart-wrapper">
+                <h4>Hourly Sales vs labor alignment (Idle leakage)</h4>
+                <div class="chart-container" id="chart-labor">
+                  <!-- Custom SVG output -->
+                </div>
+              </div>
+
+              <!-- Menu Engineer Scatter -->
+              <div class="chart-wrapper">
+                <h4>Kasavana Menu engineering Matrix</h4>
+                <div class="chart-container" id="chart-menu">
+                  <!-- Custom SVG output -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Third Chart (Voids) spanning full width -->
+            <div class="chart-wrapper" style="margin-top: 1.5rem;">
+              <h4>Server Void Variance Standard Deviation checks</h4>
+              <div class="chart-container" id="chart-voids">
+                <!-- Custom SVG output -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Sidebar (Telemetry & Data Quality) -->
+        <div class="sidebar-column">
+          
+          <!-- Data Quality score card -->
+          <div class="section-panel" style="padding: 1.25rem;">
+            <h3 style="margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem;">Data Quality Audit</h3>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Overall Score:</span>
+              <strong id="dq-overall-score" class="quality-badge-val" style="font-size: 1.4rem; font-weight: 800;">100/100</strong>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8rem; border-top: 1px dotted var(--border-color); padding-top: 0.75rem;">
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Header Mapping Confidence:</span>
+                <strong id="dq-header-conf">100%</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Missing Fields Rate:</span>
+                <strong id="dq-missing">0%</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Duplicate Rows Cleansed:</span>
+                <strong id="dq-duplicates">0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Invalid Values Intercepted:</span>
+                <strong id="dq-invalid">0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Timestamp Consistency:</span>
+                <strong id="dq-time-cons">100%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pipeline Benchmarks -->
+          <div class="section-panel" style="padding: 1.25rem;">
+            <h3 style="margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem;">Pipeline Benchmarks</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.8rem;">
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Total Rows Processed:</span>
+                <strong id="bm-rows">0</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Parsing Duration:</span>
+                <strong id="bm-time">0 ms</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Normalization Accuracy:</span>
+                <strong id="bm-acc">100%</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span class="text-muted">Header Match Success:</span>
+                <strong id="bm-header">100%</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 2: DATA PIPELINE CONTROL & LOGS -->
+    <div id="import-tab" class="tab-content hidden">
+      <div class="dashboard-grid">
+        
+        <!-- Left: Upload control & slots -->
+        <div class="main-column">
+          
+          <!-- Ingestion Slots Status -->
+          <div class="section-panel">
+            <h3>Ingest Pipeline Inboxes</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Load operational logs into slots to execute the grader checks.
+            </p>
+            <div class="slots-container">
+              <div class="slot-row">
+                <span class="slot-label">Sales Mix report (PMIX)</span>
+                <span class="slot-badge badge-success" id="badge-slot-sales">✓ Ingested</span>
+              </div>
+              <div class="slot-row">
+                <span class="slot-label">Hourly Labor Scheduling</span>
+                <span class="slot-badge badge-success" id="badge-slot-labor">✓ Ingested</span>
+              </div>
+              <div class="slot-row">
+                <span class="slot-label">Comp/Void Audit Transactions</span>
+                <span class="slot-badge badge-success" id="badge-slot-voids">✓ Ingested</span>
+              </div>
+              <div class="slot-row" style="opacity: 0.65;">
+                <span class="slot-label">Inventory Balance Sheets (Optional)</span>
+                <span class="slot-badge badge-info" id="badge-slot-inventory">○ Optional</span>
+              </div>
+              <div class="slot-row" style="opacity: 0.65;">
+                <span class="slot-label">Food Cost Recipe Ledgers (Optional)</span>
+                <span class="slot-badge badge-info" id="badge-slot-foodcost">○ Optional</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-primary" id="run-audit-btn" style="flex-grow: 1; padding: 0.5rem;">Execute Custom Ingestion</button>
+              <button class="btn-secondary" id="btn-sim-map-err" style="padding: 0.5rem;">Demo Mapping Wizard</button>
+            </div>
+          </div>
+
+          <!-- Human-in-the-loop mapping wizard card -->
+          <div id="header-mapping-wizard" class="section-panel wizard-card hidden" style="border: 1px solid var(--warning);">
+            <h3 style="color: var(--warning); border-bottom-color: var(--warning); font-size: 1rem; margin-bottom: 0.5rem;">Human-in-the-Loop Normalizer</h3>
+            <p style="font-size: 0.80rem; color: var(--text-muted);" id="wizard-prompt-label">
+              Column mapping required: Identify standard field in raw file.
+            </p>
+            <div class="wizard-form">
+              <select id="wizard-select-column" class="wizard-select">
+                <!-- Loaded dynamically -->
+              </select>
+              <button id="btn-apply-wizard-map" class="btn-primary" style="background-color: var(--warning); border-color: var(--warning); padding: 0.35rem 1rem; font-size: 0.8rem;">Apply Mapping</button>
+            </div>
+          </div>
+
+          <!-- CSV Text Inputs -->
+          <div class="section-panel">
+            <h3>Modify Ingestion Sources</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+              <div class="import-box">
+                <label for="csv-sales-mix">Raw Sales Mix (CSV)</label>
+                <textarea id="csv-sales-mix"></textarea>
+              </div>
+              <div class="import-box">
+                <label for="csv-labor">Raw Labor Schedules (CSV)</label>
+                <textarea id="csv-labor"></textarea>
+              </div>
+              <div class="import-box">
+                <label for="csv-voids">Raw Comp/Voids Logs (CSV)</label>
+                <textarea id="csv-voids"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: CI/CD style pipeline waterfall & telemetry logs console -->
+        <div class="sidebar-column">
+          
+          <!-- Ingestion progress waterfall -->
+          <div class="waterfall-panel">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 0.25rem;">Ingest Progress Checklist</h4>
+            <div class="waterfall-steps-list">
+              <div id="step-parse" class="waterfall-step">Raw CSV Parsing</div>
+              <div id="step-header" class="waterfall-step">Header Schema Mapping</div>
+              <div id="step-dedup" class="waterfall-step">Row Deduplication</div>
+              <div id="step-validate" class="waterfall-step">Invalid Values Cleanse</div>
+              <div id="step-diag" class="waterfall-step">Calculations diagnostics</div>
+              <div id="step-eval" class="waterfall-step">Priority Grader Evaluations</div>
+            </div>
+          </div>
+
+          <!-- Console -->
+          <div class="console-panel" style="height: 300px;">
+            <div class="console-header">
+              <span class="console-title">data-quality-telemetry.log</span>
+              <span class="console-status"></span>
+            </div>
+            <div class="console-stream" id="logs-console-stream">
+              <!-- Logs stream -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 3: SCHEMA VISUALIZER -->
+    <div id="visualizer-tab" class="tab-content hidden">
+      <div class="section-panel">
+        <h3>Schema Transformation Visualizer</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Shows how the parsing engine maps unstructured, messy CSV string inputs into structured, predictable JSON schemas before passing them to the diagnostics engines.
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Raw CSV Row (Ingested Source)</h4>
+            <pre id="schema-raw-sample" style="background-color: #f1f5f9; padding: 1rem; border-radius: 4px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.75rem; overflow-x: auto;"></pre>
+          </div>
+          <div>
+            <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--text-muted);">Normalized JSON Schema (Internal Model)</h4>
+            <pre id="schema-normalized-sample" style="background-color: #f1f5f9; padding: 1rem; border-radius: 4px; border: 1px solid var(--border-color); font-family: monospace; font-size: 0.75rem; overflow-x: auto; color: #0f172a;"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB 4: TEST VECTORS SUITE -->
+    <div id="tests-tab" class="tab-content hidden">
+      <div class="section-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+          <h3>Deterministic Unit Test Suite</h3>
+          <button id="btn-run-tests" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Run Test Suite</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Executes local unit tests asserting the mathematical models and normalizers (verifying SPLH cost limits, menu engineering quadrants, and standard deviation Z-score outliers).
+        </p>
+
+        <div class="console-panel" style="height: 400px; background-color: #0f172a;">
+          <div class="console-header" style="background-color: #020617; border-bottom-color: #1e293b;">
+            <span class="console-title" style="color: #64748b;">test-assertions.sh</span>
+          </div>
+          <div class="console-stream" id="tests-console" style="color: #e2e8f0;">
+            <!-- Unit test assertions logs -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB 5: DATA LEDGERS -->
+    <div id="tables-tab" class="tab-content hidden">
+      
+      <div class="section-panel" style="margin-bottom: 1.5rem;">
+        <h3>Normalized Product Mix (PMIX) Ledger</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Menu Item Name</th>
+                <th>Category</th>
+                <th>Units Sold</th>
+                <th>Price</th>
+                <th>Unit Cost</th>
+                <th>Contrib Margin</th>
+                <th>Mix Share</th>
+                <th>Classification</th>
+              </tr>
+            </thead>
+            <tbody id="table-sales-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-panel" style="margin-bottom: 1.5rem;">
+        <h3>Hourly Labor and Sales Integration Ledger</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp Period</th>
+                <th>Hourly Sales</th>
+                <th>Labor Hours</th>
+                <th>Labor Cost</th>
+                <th>Labor Cost %</th>
+                <th>Hourly SPLH</th>
+                <th>System Check</th>
+              </tr>
+            </thead>
+            <tbody id="table-labor-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-panel">
+        <h3>Server Void Audit Ledger</h3>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Employee Name</th>
+                <th>Net Sales Checked</th>
+                <th>Voided Amount</th>
+                <th>Void Percentage</th>
+                <th>Variance Z-Score</th>
+                <th>Anomaly Flag</th>
+              </tr>
+            </thead>
+            <tbody id="table-voids-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB 6: METHODOLOGY DOCS -->
+    <div id="docs-tab" class="tab-content hidden">
+      <div class="docs-view">
+        
+        <!-- Metrics Dictionary -->
+        <div class="doc-wrapper">
+          <h2>Metrics Dictionary</h2>
+          <h3>Prime Cost Percentage</h3>
+          <pre>Prime Cost % = ((Cost of Goods Sold (COGS) + Total Labor Cost) / Gross Revenue) * 100</pre>
+          <p>Indicates combined raw food costs and payroll margins. Target standard is 55-60%.</p>
+          
+          <h3>Sales Per Labor Hour (SPLH)</h3>
+          <pre>SPLH = Net Sales / Total Labor Hours Worked</pre>
+          <p>Standardized measurement of labor productivity. Free from wage rate deviations. Target FSR: $75-$110.</p>
+
+          <h3>Off-Peak Labor Leakage</h3>
+          <p>Identifies slow periods where sales fall below the core operational threshold and hourly labor percentage exceeds 45%.</p>
+
+          <h3>Smith-Kasavana Menu Engineering quadrant matrix</h3>
+          <ul>
+            <li><strong>Star:</strong> High Popularity, High Contribution Margin.</li>
+            <li><strong>Workhorse:</strong> High Popularity, Low Contribution Margin.</li>
+            <li><strong>Puzzle:</strong> Low Popularity, High Contribution Margin.</li>
+            <li><strong>Dog:</strong> Low Popularity, Low Contribution Margin.</li>
+          </ul>
+
+          <h3>Severity & Confidence Scoring Rubrics</h3>
+          <p>Anomalies are scored based on two separate vectors to preserve rating clarity:</p>
+          <pre>Severity Score (3-15) = Financial Impact (1-5) + Frequency (1-5) + Operational Risk (1-5)</pre>
+          <pre>Confidence Score (1-5) = (Data Completeness (1-5) + Metric Stability (1-5) + Input Quality (1-5)) / 3</pre>
+        </div>
+
+        <!-- Diagnostic Methodology -->
+        <div class="doc-wrapper">
+          <h2>Diagnostic Methodology</h2>
+          <h3>Out-of-Bounds Off-Peak Labor Leakage</h3>
+          <p>Identifies mid-day sales gaps where payroll cost percentage exceeds 45% and sales drop below core staffing baselines ($150). Opened/Closed setup shifts are excluded.</p>
+          
+          <h3>Server Void Outlier (Z-Score Deviation)</h3>
+          <p>Uses statistical standard deviations to evaluate individual employee void rates against peer averages on the same shift types. Flagged if Z-Score &ge; 1.5, protecting the heuristic against global shift errors.</p>
+        </div>
+
+        <!-- Privacy Model -->
+        <div class="doc-wrapper">
+          <h2>Privacy & Security Model</h2>
+          <p><strong>Zero Server-Side Storage:</strong> Ingested files are parsed within local browser memory using HTML5 FileReader. Restaurant transaction numbers, employee payroll profiles, and operational margins never leave the computer.</p>
+          <p><strong>Reduced Exposure:</strong> Client-side computing mitigates compliance exposure (PCI, salary details) and external security risk.</p>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 7: AI EVALUATION ALIGNMENT -->
+    <div id="ai-relevance-tab" class="tab-content hidden">
+      <div class="doc-wrapper">
+        <h2>Why This Project Matters for AI Operations</h2>
+        <p>Signal demonstrates the same core competencies required in AI evaluation, data operations, and LLM rating frameworks:</p>
+        
+        <h3>1. Structuring Messy Unstructured Inputs</h3>
+        <p>In AI systems, prompt outputs and document files are highly unstructured and drift frequently. Signal's column parser in <code>parsers.js</code> uses fuzzy substring heuristics to clean and map arbitrary external tables to unified schema keys—similar to normalizing LLM JSON output structures.</p>
+
+        <h3>2. Validation & Anomaly Guardrails</h3>
+        <p>Evaluators must catch malformed or invalid runs before calculations start. Signal pre-validates files, intercepts negative hours, interpolates missing ingredients cost with averages, and logs telemetry warnings—matching LLM verification and data monitoring practices.</p>
+
+        <h3>3. Grading and Scoring Frameworks</h3>
+        <p>Assessing model accuracy, toxicity, or safety requires strict quantitative scoring. Signal translates business targets (SPLH ratios, margin cutoffs) into repeatable mathematical criteria, and scores anomalies using a multi-dimensional rubric:</p>
+        <pre>Severity Score = Financial Impact + Frequency + Operational Risk + Confidence Level</pre>
+        <p>This is identical to rating LLM errors based on severity, occurrence probability, user safety, and evaluator model certainty.</p>
+
+        <h3>4. Explainability & Observability</h3>
+        <p>In evaluation pipelines, grading labels must be transparent and actionable. Signal does not just flag anomalies; it outputs the score components, explains the root cause, and generates prioritized, step-by-step remediation plans. This models the explainable AI (XAI) design required in production systems.</p>
+      </div>
+    </div>
+
+    <!-- TAB 8: SAMPLE AUDIT REPORTS -->
+    <div id="reports-tab" class="tab-content hidden">
+      <div class="docs-view">
+        <div class="doc-wrapper">
+          <h2>Sample Audit Reports Archive</h2>
+          <p>This section displays reference diagnostic reports generated by the evaluation engine. These outputs model the executive deliverables a consultant delivers to restaurant owners.</p>
+          
+          <div style="display: flex; gap: 1rem; margin-top: 1rem; margin-bottom: 2rem;">
+            <a href="reports/bistro-royale-audit.md" target="_blank" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; display: inline-block; border-radius: 4px;">📄 View Bistro Royale Audit (.md)</a>
+            <a href="reports/signal-export-sample.json" target="_blank" class="btn-secondary" style="text-decoration: none; padding: 0.5rem 1rem; display: inline-block; border-radius: 4px;">⚙️ View Sample Export (.json)</a>
+          </div>
+
+          <h3>Bistro Royale Executive Summary Report Mockup</h3>
+          <div style="background-color: #f8fafc; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; margin-top: 1rem;">
+            <h4 style="font-size: 1.2rem; font-weight: 800; border-bottom: 2px solid var(--text-main); padding-bottom: 0.5rem; margin-bottom: 1rem;">BISTRO ROYALE DIAGNOSTIC REPORT</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem; margin-bottom: 1.5rem;">
+              <div><strong>Concept:</strong> Full-Service Bistro</div>
+              <div><strong>System Health Score:</strong> 82/100</div>
+              <div><strong>Data Quality Grade:</strong> 94/100</div>
+              <div><strong>Annual Recovery Savings:</strong> $48,204</div>
+            </div>
+            
+            <h5 style="font-size: 0.95rem; font-weight: 700; color: var(--danger); margin-bottom: 0.5rem;">🚨 Finding 1: Server Transaction Void Outlier (Sarah T.)</h5>
+            <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
+              Server Sarah T. has a void rate of 8.2%, representing a +1.6σ deviation from the peer average of 1.4%. This indicates compliance and cashier integrity risk.<br>
+              <strong>Action Protocol:</strong> Require manager PIN overrides for post-receipt voids. Weekly audits.<br>
+              <strong>Est. Savings:</strong> $16,640/yr
+            </p>
+
+            <h5 style="font-size: 0.95rem; font-weight: 700; color: var(--warning); margin-bottom: 0.5rem;">⚠️ Finding 2: Mid-Week Shoulder Labor Leakage</h5>
+            <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--text-muted);">
+              Labor cost exceeds 45% of sales on weekday shoulders (2-4:30 PM). Net sales fall below $150/hr.<br>
+              <strong>Action Protocol:</strong> Stagger lunch/dinner shift transfers to keep only core minimum staff clocked in.<br>
+              <strong>Est. Savings:</strong> $27,664/yr
+            </p>
+
+            <h5 style="font-size: 0.95rem; font-weight: 700; color: var(--info); margin-bottom: 0.5rem;">ℹ️ Finding 3: Menu Costing Drag (Truffle Mac & Cheese)</h5>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              Representing 2.1% sales share with a low margin of $7.80 vs. Average $8.90.<br>
+              <strong>Action Protocol:</strong> Re-engineer recipe target 25% cost ($3.50) or replace in layout.<br>
+              <strong>Est. Savings:</strong> $3,900/yr
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Script dependencies -->
+  <script src="js/samples.js"></script>
+  <script src="js/parsers.js"></script>
+  <script src="js/diagnostics.js"></script>
+  <script src="js/evaluation.js"></script>
+  <script src="js/charts.js"></script>
+  
+  <!-- Browser Test dependencies -->
+  <script src="tests/parser.test.js"></script>
+  <script src="tests/diagnostics.test.js"></script>
+  <script src="tests/evaluation.test.js"></script>
+  <script src="js/tests.js"></script>
+  
+  <!-- UI Coordinator -->
+  <script src="app.js"></script>
+</body>
+</html>
