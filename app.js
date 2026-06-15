@@ -123,6 +123,47 @@ const App = {
     if (mapSimBtn) {
       mapSimBtn.addEventListener("click", () => this.simulateHeaderError());
     }
+
+    // File Upload Listeners
+    const fileSales = document.getElementById("file-sales");
+    if (fileSales) {
+      fileSales.addEventListener("change", (e) => this.handleFileUpload(e, "salesMix"));
+      fileSales.addEventListener("click", (e) => e.stopPropagation());
+    }
+    const fileLabor = document.getElementById("file-labor");
+    if (fileLabor) {
+      fileLabor.addEventListener("change", (e) => this.handleFileUpload(e, "laborLeakage"));
+      fileLabor.addEventListener("click", (e) => e.stopPropagation());
+    }
+    const fileVoids = document.getElementById("file-voids");
+    if (fileVoids) {
+      fileVoids.addEventListener("change", (e) => this.handleFileUpload(e, "voidLog"));
+      fileVoids.addEventListener("click", (e) => e.stopPropagation());
+    }
+  },
+
+  /**
+   * Reads raw CSV file from input slot client-side and triggers normalizer
+   */
+  handleFileUpload(event, schemaType) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const csvText = e.target.result;
+      if (schemaType === "salesMix") {
+        this.state.rawSalesMix = csvText;
+      } else if (schemaType === "laborLeakage") {
+        this.state.rawLabor = csvText;
+      } else if (schemaType === "voidLog") {
+        this.state.rawVoids = csvText;
+      }
+      this.addLog("success", `File "${file.name}" loaded successfully (${Math.round(file.size / 1024)} KB)`);
+      this.updateUploaderInputs();
+      this.runAuditPipeline();
+    };
+    reader.readAsText(file);
   },
 
   /**

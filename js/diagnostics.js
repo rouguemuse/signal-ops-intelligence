@@ -1,7 +1,9 @@
 /**
- * Signal Operations Intelligence - Diagnostics Engine
+ * Signal Operations Intelligence - Diagnostics Engine (Demo Shell)
  * 
- * Implements deterministic calculation models for restaurant operational audits.
+ * Implements simplified, configurable diagnostics calculations for restaurant operational audits.
+ * NOTE: Production heuristics, advanced weighting factors, and proprietary thresholds are removed 
+ * or simplified for portfolio demonstration.
  */
 
 const Diagnostics = {

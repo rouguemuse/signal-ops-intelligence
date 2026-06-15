@@ -1,8 +1,9 @@
 /**
- * Signal Operations Intelligence - Evaluation Grader Engine
+ * Signal Operations Intelligence - Evaluation Grader Engine (Demo Shell)
  * 
- * Scores anomalies based on explicit rules and calculates multi-variable confidence checklists.
- * Exports granular statistics for explainable diagnostic drawers.
+ * Scores anomalies based on simplified demonstration rules and computes multi-variable confidence checklists.
+ * NOTE: Production scoring weights, industry benchmark thresholds, and advanced recommendation triggers
+ * are simplified or mocked for portfolio demonstration.
  */
 
 const Evaluation = {

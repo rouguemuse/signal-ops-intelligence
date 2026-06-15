@@ -21,7 +21,9 @@
         </svg>
         SIGNAL
       </h1>
-      <p>Deterministic Diagnostics & Evaluation Framework</p>
+      <p style="max-width: 900px; margin-top: 0.25rem; font-size: 0.85rem; line-height: 1.4; color: var(--text-muted);">
+        Signal is a deterministic evaluation framework that transforms inconsistent operational data into standardized schemas, validates quality, computes diagnostics, and produces explainable recommendations. Restaurant operations serve as the demonstration domain.
+      </p>
     </div>
     
     <div style="display: flex; gap: 0.5rem; align-items: center;">
@@ -232,16 +234,25 @@
               Load operational logs into slots to execute the grader checks.
             </p>
             <div class="slots-container">
-              <div class="slot-row">
-                <span class="slot-label">Sales Mix report (PMIX)</span>
+              <div class="slot-row" onclick="document.getElementById('file-sales').click()" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor='#f9fafb'">
+                <div>
+                  <span class="slot-label">Sales Mix Export (CSV)</span>
+                  <input type="file" id="file-sales" style="display:none;" accept=".csv">
+                </div>
                 <span class="slot-badge badge-success" id="badge-slot-sales">✓ Ingested</span>
               </div>
-              <div class="slot-row">
-                <span class="slot-label">Hourly Labor Scheduling</span>
+              <div class="slot-row" onclick="document.getElementById('file-labor').click()" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor='#f9fafb'">
+                <div>
+                  <span class="slot-label">Hourly Labor Report (CSV)</span>
+                  <input type="file" id="file-labor" style="display:none;" accept=".csv">
+                </div>
                 <span class="slot-badge badge-success" id="badge-slot-labor">✓ Ingested</span>
               </div>
-              <div class="slot-row">
-                <span class="slot-label">Comp/Void Audit Transactions</span>
+              <div class="slot-row" onclick="document.getElementById('file-voids').click()" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f1f5f9'" onmouseout="this.style.backgroundColor='#f9fafb'">
+                <div>
+                  <span class="slot-label">Comp/Void Transaction Log (CSV)</span>
+                  <input type="file" id="file-voids" style="display:none;" accept=".csv">
+                </div>
                 <span class="slot-badge badge-success" id="badge-slot-voids">✓ Ingested</span>
               </div>
               <div class="slot-row" style="opacity: 0.65;">
