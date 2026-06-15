@@ -1,16 +1,62 @@
-# Signal: Operations Ingestion & Evaluation Framework
+# Signal Operations Intelligence
 
-> **Signal is a deterministic diagnostics engine that converts inconsistent operational data into standardized schemas, calculates auditable performance metrics, detects anomalies, and produces prioritized recommendations. Restaurant operations serve as the demonstration domain.**
+![Status](https://img.shields.io/badge/Status-Portfolio-blue)
+![Evaluation Framework](https://img.shields.io/badge/Type-Deterministic%20Evaluation-success)
+![Privacy](https://img.shields.io/badge/Processing-Client%20Side-green)
+![Tests](https://img.shields.io/badge/Tested-Yes-brightgreen)
+
+> **Signal is a deterministic evaluation framework that transforms inconsistent operational data into standardized schemas, validates input quality, computes explainable diagnostics, and produces prioritized recommendations. Restaurant operations are used as the demonstration domain for a generalized evaluation pipeline.**
 
 > **Disclaimer:** This repository demonstrates architecture, evaluation methodology, and data normalization concepts. Production scoring models and commercial rule sets are intentionally simplified for portfolio purposes.
 
-## Why This Exists
+---
 
-Signal is a portfolio project demonstrating my approach to data normalization, deterministic evaluation, explainable diagnostics, and systems design. It is intended to showcase engineering methodology and operational thinking rather than replicate the production capabilities of the underlying commercial concept.
+## System Architecture
+
+```text
+Raw Reports
+     │
+     ▼
+Normalize
+     │
+     ▼
+Validate
+     │
+     ▼
+Evaluate
+     │
+     ▼
+Prioritize
+     │
+     ▼
+Generate Report
+```
 
 ---
 
-The framework turns fragmented CSV logs (sales mix, hourly labor scheduling, server comp/void transactions) into a structured operational audit report, prioritizing margin leakage by combining impact severity calculations and grader confidence ratings.
+## System Interface Preview
+
+![Dashboard Overview](screenshots/dashboard-overview.png)
+*Figure 1: Signal Interactive Operations Dashboard (System health score, data quality validation, and prioritized decision support findings).*
+
+![Deterministic Test Suite](screenshots/passing-test-suite.png)
+*Figure 2: Built-in deterministic test runner demonstrating 100% assertions pass rate on incoming sample vectors.*
+
+---
+
+## Why I Built This
+
+Restaurant operators have access to enormous amounts of data but often lack structured decision support. Signal demonstrates how deterministic evaluation frameworks can normalize inconsistent inputs, validate quality, and surface actionable insights. The same architectural principles apply to AI evaluation, data annotation, and operational diagnostics.
+
+---
+
+## Design Principles
+
+* **Deterministic over opaque**: Hard-coded math, clear thresholds, and reproducible calculations replace "black box" machine learning or opaque heuristics for auditability.
+* **Explainable over black-box**: Every diagnostic insight links directly back to the raw records and parameters that triggered it, complete with mathematical formulas and step-by-step evidence.
+* **Human-auditable outputs**: Decision support recommendations and metrics are designed to be read, verified, and exported by human operators, preserving trust.
+* **Confidence-aware recommendations**: Each decision support entry includes a confidence grading score based on data completeness and signal stability.
+* **Data quality before decision quality**: Checking schemas, bounding numeric outliers, and resolving duplicate records occurs *before* evaluating operational health.
 
 ---
 
@@ -32,7 +78,7 @@ The framework turns fragmented CSV logs (sales mix, hourly labor scheduling, ser
 
 ## Portfolio Purpose
 
-Signal is a systems-building portfolio project designed to demonstrate data normalization, quality checks, deterministic diagnostic logic, anomaly scoring, and actionable recommendation design.
+Signal is a systems-building portfolio project designed to demonstrate data normalization, quality checks, deterministic diagnostic logic, anomaly scoring, and actionable decision support design.
 
 The goal is not to present a flashy restaurant dashboard. The goal is to show how messy operational data can be converted into structured, auditable insights using clear rules, documented assumptions, and repeatable evaluation workflows.
 
@@ -41,19 +87,10 @@ The goal is not to present a flashy restaurant dashboard. The goal is to show ho
 ## What Recruiters Should Notice
 
 * **Data Quality Engineering over Business Heuristics**: The core focus is on the data pipeline. It evaluates the *validity* and *consistency* of the data itself (using deduplication, absolute-value bounding for negative hours, and average interpolation for missing cells) before executing business rules.
-* **Granular Grader Rubrics**: Rather than flat anomaly flags, recommendations are graded on two separate dimensions: a **15-point Severity scale** (measuring financial impact, risk, and frequency) and a **5-point Confidence checklist** (confirming completeness, pattern stability, and timestamp alignment).
+* **Granular Grader Rubrics**: Rather than flat anomaly flags, decision support findings are graded on two separate dimensions: a **15-point Severity scale** (measuring financial impact, risk, and frequency) and a **5-point Confidence checklist** (confirming completeness, pattern stability, and timestamp alignment).
 * **Statistical Outlier Detection (Z-Score)**: The void logs audit evaluates cashiers using standard deviations ($z \ge 1.5$) against active shift averages. This prevents global check errors from falsely triggering anomalies on individual cashiers.
 * **Verifiable Mathematical Logic**: The calculations are completely transparent. Every finding includes an "Explain this Finding" drawer displaying the math behind the deviation, the specific baseline and threshold triggers, and the list of triggered rules.
 * **Deterministic Unit Tests**: The mathematical calculations (Smith-Kasavana menu categories, SPLH, Z-scores, and grading metrics) are fully verified on launch with a local test suite visible in the **Test Vectors Suite** tab.
-
----
-
-## Export Options
-
-Signal supports multi-format report exports for stakeholders:
-* **Print / Save as PDF**: Toggling the *Print / Save as PDF* button applies custom CSS media queries (`@media print`) that strip out navigation tabs, log consoles, and buttons, formatting the dashboard into a clean, document-styled executive report.
-* **Export Audit JSON**: Exports the complete processed telemetry state (including normalized logs, KPIs, recommendations, and Z-score calculations) as a standardized JSON data file.
-* **Export Findings MD**: Compiles finding cards, mathematical evidence, and action protocols into a formatted Markdown document suitable for integration into external dashboards or wikis.
 
 ---
 
@@ -102,6 +139,15 @@ Crispy Calamari,Appetizers,85,1190.00,N/A,14.00
 
 ---
 
+## Export Options
+
+Signal supports multi-format report exports for stakeholders:
+* **Print / Save as PDF**: Toggling the *Print / Save as PDF* button applies custom CSS media queries (`@media print`) that strip out navigation tabs, log consoles, and buttons, formatting the dashboard into a clean, document-styled executive report.
+* **Export Audit JSON**: Exports the complete processed telemetry state (including normalized logs, KPIs, recommendations, and Z-score calculations) as a standardized JSON data file.
+* **Export Findings MD**: Compiles finding cards, mathematical evidence, and action protocols into a formatted Markdown document suitable for integration into external dashboards or wikis.
+
+---
+
 ## Ingest Testing Vectors
 
 Signal incorporates a deterministic assertions suite running both in Node.js and directly in the browser UI under the **Test Vectors Suite** tab.
@@ -114,6 +160,17 @@ To run tests in CLI:
 ```bash
 node tests/run-tests.js
 ```
+
+---
+
+## Future Roadmap
+
+* [ ] **Multi-POS adapters**: Standardize ingestion adapters for major systems like Toast, Clover, and NCR Silver.
+* [ ] **LLM-assisted explanation layer**: Integrate a local LLM interface to draft operator action protocols based on the deterministic findings.
+* [ ] **Historical trend engine**: Run time-series regressions on rolling monthly data to detect multi-week operational drift.
+* [ ] **Predictive staffing**: Use historical volume patterns and forecast schedules to recommend dynamic staffing guidelines.
+* [ ] **Anomaly clustering**: Apply density-based spatial clustering to group related void and labor deviations.
+* [ ] **Benchmark comparisons**: Integrate industry-standard regional performance benchmarks to contextualize store performance.
 
 ---
 
@@ -146,7 +203,8 @@ node tests/run-tests.js
 │   ├── bistro-royale-audit.md
 │   └── signal-export-sample.json
 ├── screenshots/                # Visual overview references
-│   └── dashboard-overview.png
+│   ├── dashboard-overview.png
+│   └── passing-test-suite.png
 ├── docs/
 │   ├── metrics-dictionary.md
 │   ├── data-schema.md
@@ -162,4 +220,4 @@ node tests/run-tests.js
 
 ## Signal Philosophy
 
-> **Signal is not designed to replace human judgment. It is designed to make human judgment faster, more consistent, and easier to audit by converting ambiguous operational data into structured evidence.**
+> **The goal of Signal is not to automate judgment, but to make human judgment faster, more consistent, and easier to defend by transforming ambiguous operational data into structured evidence.**
