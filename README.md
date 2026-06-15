@@ -2,7 +2,13 @@
 
 > **Signal is a deterministic diagnostics engine that converts inconsistent operational data into standardized schemas, calculates auditable performance metrics, detects anomalies, and produces prioritized recommendations. Restaurant operations serve as the demonstration domain.**
 
-> **Demo Disclaimer:** This repository represents the open-source pipeline shell (parsers, schema normalizers, data quality scorer, SVG charts, and interactive UI). The core diagnostics heuristics and scoring weights are simplified demo models ("demo-rules.js" architecture) to protect proprietary commercial intellectual property.
+> **Disclaimer:** This repository demonstrates architecture, evaluation methodology, and data normalization concepts. Production scoring models and commercial rule sets are intentionally simplified for portfolio purposes.
+
+## Why This Exists
+
+Signal is a portfolio project demonstrating my approach to data normalization, deterministic evaluation, explainable diagnostics, and systems design. It is intended to showcase engineering methodology and operational thinking rather than replicate the production capabilities of the underlying commercial concept.
+
+---
 
 The framework turns fragmented CSV logs (sales mix, hourly labor scheduling, server comp/void transactions) into a structured operational audit report, prioritizing margin leakage by combining impact severity calculations and grader confidence ratings.
 
