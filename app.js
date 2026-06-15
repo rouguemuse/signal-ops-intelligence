@@ -566,6 +566,7 @@ const App = {
     this.renderDetailTables();
     this.renderSchemaVisualizer();
     this.updateClientReportHeader();
+    this.renderDecisionReadiness();
   },
 
   updateClientReportHeader() {
@@ -573,6 +574,77 @@ const App = {
     if (title) {
       const dataset = samples[this.state.activePreset];
       title.textContent = `Client: ${dataset.name}`;
+    }
+  },
+
+  renderDecisionReadiness() {
+    const readinessPctEl = document.getElementById("readiness-pct");
+    const readinessBarFillEl = document.getElementById("readiness-bar-fill");
+    const readinessQualityEl = document.getElementById("readiness-quality");
+    const readinessConfidenceEl = document.getElementById("readiness-confidence");
+    const readinessHealthEl = document.getElementById("readiness-health");
+    const readinessActionsEl = document.getElementById("readiness-actions");
+
+    if (!readinessPctEl) return;
+
+    const q = this.state.qualityMetrics;
+    const recommendations = this.state.auditSummary.recommendations || [];
+    const health = this.state.auditSummary.healthScore;
+
+    // 1. Data Quality Rating
+    let qualityLabel = "Low";
+    let qualityColor = "#f87171";
+    if (q.overallScore >= 85) { qualityLabel = "High"; qualityColor = "#4ade80"; }
+    else if (q.overallScore >= 60) { qualityLabel = "Medium"; qualityColor = "#fbbf24"; }
+
+    // 2. Evaluation Confidence
+    let avgConf = 5.0;
+    if (recommendations.length > 0) {
+      avgConf = recommendations.reduce((acc, curr) => acc + curr.confidenceBreakdown.total, 0) / recommendations.length;
+    }
+    let confidenceLabel = "Low";
+    let confidenceColor = "#f87171";
+    if (avgConf >= 4.0) { confidenceLabel = "High"; confidenceColor = "#4ade80"; }
+    else if (avgConf >= 3.0) { confidenceLabel = "Medium"; confidenceColor = "#fbbf24"; }
+
+    // 3. System Health
+    let healthLabel = "Critical";
+    let healthColor = "#f87171";
+    if (health >= 85) { healthLabel = "Excellent"; healthColor = "#4ade80"; }
+    else if (health >= 60) { healthLabel = "Moderate"; healthColor = "#fbbf24"; }
+
+    // 4. Decision Readiness Score calculation
+    const baseReadiness = (q.overallScore * 0.6) + (avgConf * 20 * 0.4);
+    const actionsPenalty = recommendations.length * 1.5;
+    const readinessIndex = Math.max(0, Math.min(100, Math.round(baseReadiness - actionsPenalty)));
+
+    // Update DOM
+    readinessPctEl.textContent = `${readinessIndex}%`;
+    if (readinessBarFillEl) {
+      readinessBarFillEl.style.width = `${readinessIndex}%`;
+      if (readinessIndex >= 85) {
+        readinessBarFillEl.style.background = "linear-gradient(90deg, #0284c7 0%, #38bdf8 100%)";
+      } else if (readinessIndex >= 60) {
+        readinessBarFillEl.style.background = "linear-gradient(90deg, #b45309 0%, #fbbf24 100%)";
+      } else {
+        readinessBarFillEl.style.background = "linear-gradient(90deg, #b91c1c 0%, #f87171 100%)";
+      }
+    }
+
+    if (readinessQualityEl) {
+      readinessQualityEl.textContent = qualityLabel;
+      readinessQualityEl.style.color = qualityColor;
+    }
+    if (readinessConfidenceEl) {
+      readinessConfidenceEl.textContent = confidenceLabel;
+      readinessConfidenceEl.style.color = confidenceColor;
+    }
+    if (readinessHealthEl) {
+      readinessHealthEl.textContent = healthLabel;
+      readinessHealthEl.style.color = healthColor;
+    }
+    if (readinessActionsEl) {
+      readinessActionsEl.textContent = recommendations.length;
     }
   },
 

@@ -5,9 +5,26 @@
 ![Privacy](https://img.shields.io/badge/Processing-Client%20Side-green)
 ![Tests](https://img.shields.io/badge/Tested-Yes-brightgreen)
 
-> **Signal is a deterministic evaluation framework that transforms inconsistent operational data into standardized schemas, validates input quality, computes explainable diagnostics, and produces prioritized recommendations. Restaurant operations are used as the demonstration domain for a generalized evaluation pipeline.**
+Imagine opening six different reports and trying to answer one simple question: *What should I fix first?*
+
+Signal was built to solve that problem. It ingests inconsistent operational data, normalizes it into a common schema, validates quality, evaluates risk, and surfaces the highest-impact decisions with transparent reasoning and confidence scoring.
 
 > **Disclaimer:** This repository demonstrates architecture, evaluation methodology, and data normalization concepts. Production scoring models and commercial rule sets are intentionally simplified for portfolio purposes.
+
+---
+
+## The Core Concept
+
+**Restaurant operations are simply the demonstration domain. The underlying architecture is applicable anywhere inconsistent data must be normalized, evaluated, and translated into explainable decisions.**
+
+For example:
+* **AI Evaluation & LLM Safety**: Normalizing and grading model response logs, safety guardrail violations, and toxic triggers against fixed parameters.
+* **Data Annotation Audits**: Ingesting labeler logs to identify annotator bias and Z-score consensus drift.
+* **Talent Operations**: Standardizing interview scores, skill test ratios, and grading evaluations across hiring panels.
+* **Manufacturing Log-Drift**: Normalizing sensor metrics to flag calibration drift before tolerances are breached.
+* **Healthcare Operations**: Auditing scheduling slots and clinical compliance logs to highlight patient throughput bottlenecks.
+* **Compliance Auditing**: Normalizing security events, mapping logs to standard threat schemas, and flagging severity outliers.
+* **Customer Support QA**: Standardizing CSAT scores, hourly volumes, and response timing to isolate representative case outliers.
 
 ---
 
@@ -34,6 +51,35 @@ Generate Report
 
 ---
 
+## An Actual Example
+
+### 1. Raw Input
+Messy, raw CSV records are uploaded to the client sandbox:
+```csv
+NET SALES,$12,305
+Labor Hours,108
+VOID %,3.2
+```
+
+### 2. Normalized Output
+The ingestion normalizer maps keys, cleans values, bounds anomalies, and creates structured telemetry:
+```json
+{
+  "net_sales": 12305,
+  "labor_hours": 108,
+  "void_rate": 0.032,
+  "data_quality": 94,
+  "severity": 13,
+  "confidence": "High"
+}
+```
+
+### 3. Priority Decision Support
+A deterministic grading module compares the telemetry against regional standards and active parameters:
+> **[Rule-14] Labor utilization is significantly below expected efficiency. Projected annual margin leakage: $38,000. Confidence: High.**
+
+---
+
 ## System Interface Preview
 
 ![Dashboard Overview](screenshots/dashboard-overview.png)
@@ -46,7 +92,7 @@ Generate Report
 
 ## Why I Built This
 
-Restaurant operators have access to enormous amounts of data but often lack structured decision support. Signal demonstrates how deterministic evaluation frameworks can normalize inconsistent inputs, validate quality, and surface actionable insights. The same architectural principles apply to AI evaluation, data annotation, and operational diagnostics.
+Operators have access to enormous amounts of data but often lack structured decision support. Signal demonstrates how deterministic evaluation frameworks can normalize inconsistent inputs, validate quality, and surface actionable insights. The same architectural principles apply to AI evaluation, data annotation, and operational diagnostics.
 
 ---
 
@@ -64,7 +110,7 @@ Restaurant operators have access to enormous amounts of data but often lack stru
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/signal-ops-intelligence.git
+   git clone https://github.com/rouguemuse/signal-ops-intelligence.git
    cd signal-ops-intelligence
    ```
 2. **Run Locally:**

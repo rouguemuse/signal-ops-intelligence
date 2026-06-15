@@ -66,6 +66,46 @@
         </div>
       </div>
 
+      <!-- System Decision Readiness Summary Widget -->
+      <div class="section-panel hide-on-print" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #f8fafc; border: 1px solid #334155; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); padding: 1.25rem;">
+        <h3 style="color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.75rem 0;">System Decision Readiness</h3>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+          
+          <!-- Readiness Percentage and Visual Bar -->
+          <div style="flex: 1; min-width: 240px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+              <span style="font-size: 1.85rem; font-weight: 800; color: #38bdf8;" id="readiness-pct">92%</span>
+              <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em;">READINESS INDEX</span>
+            </div>
+            <!-- Progress Bar -->
+            <div style="height: 10px; width: 100%; background-color: #334155; border-radius: 5px; overflow: hidden; display: flex; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
+              <div id="readiness-bar-fill" style="height: 100%; width: 92%; background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%); transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+            </div>
+          </div>
+
+          <!-- Metadata Tags -->
+          <div style="display: flex; gap: 2rem; flex-wrap: wrap; flex: 2; justify-content: space-around; border-left: 1px solid #334155; padding-left: 1.5rem; margin-left: 0.5rem;">
+            <div>
+              <span style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; font-weight: 600;">Data Quality</span>
+              <span id="readiness-quality" style="font-size: 0.95rem; font-weight: 700; color: #4ade80;">High</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; font-weight: 600;">Evaluation Confidence</span>
+              <span id="readiness-confidence" style="font-size: 0.95rem; font-weight: 700; color: #4ade80;">High</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; font-weight: 600;">System Health</span>
+              <span id="readiness-health" style="font-size: 0.95rem; font-weight: 700; color: #fbbf24;">Moderate</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.25rem; font-weight: 600;">Recommended Actions</span>
+              <span id="readiness-actions" style="font-size: 1.35rem; font-weight: 800; color: #f8fafc;">3</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Top Level KPIs -->
       <div class="kpis-grid" style="margin-bottom: 1.5rem;">
         <div class="kpi-card" id="health-card">
