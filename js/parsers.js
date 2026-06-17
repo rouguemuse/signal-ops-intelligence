@@ -37,12 +37,35 @@ const Parsers = {
    * Helper to parse a raw CSV string into an array of raw objects
    */
   parseCSV(csvText, logCollector = []) {
+    // Strip UTF-8 BOM if present
+    if (csvText.startsWith("\uFEFF")) {
+      csvText = csvText.substring(1);
+    }
+
     const lines = csvText.split(/\r?\n/);
     const result = [];
     let headers = [];
     let headerParsed = false;
 
     logCollector.push({ type: "info", message: `Initiating parse for ${lines.length} lines of raw CSV data` });
+
+    // Detect delimiter: count commas vs semicolons vs tabs in first non-comment line
+    let delimiter = ",";
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (line && !line.startsWith("#")) {
+        const commaCount = (line.match(/,/g) || []).length;
+        const semiCount = (line.match(/;/g) || []).length;
+        const tabCount = (line.match(/\t/g) || []).length;
+        if (semiCount > commaCount && semiCount > tabCount) {
+          delimiter = ";";
+        } else if (tabCount > commaCount && tabCount > semiCount) {
+          delimiter = "\t";
+        }
+        break;
+      }
+    }
+    logCollector.push({ type: "info", message: `Detected CSV delimiter: "${delimiter === "\t" ? "\\t" : delimiter}"` });
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i].trim();
@@ -52,27 +75,34 @@ const Parsers = {
         continue;
       }
 
-      // Simple CSV split logic (handles simple quotes, but optimized for POS reports)
+      // Robust CSV split logic handling quotes and arbitrary delimiters
       const values = [];
-      let match;
-      const csvRegex = /("([^"]*)"|[^,]+|(?=,))/g;
-      
-      let lastIndex = 0;
-      while ((match = csvRegex.exec(line)) !== null) {
-        if (match.index === csvRegex.lastIndex) {
-          csvRegex.lastIndex++; // Avoid infinite loop
-        }
-        let val = match[1] !== undefined ? match[2] : match[0];
-        val = val ? val.trim() : "";
-        values.push(val);
-      }
+      let currentVal = "";
+      let inQuotes = false;
 
-      if (line.endsWith(",")) {
-        values.push("");
+      for (let charIdx = 0; charIdx < line.length; charIdx++) {
+        const char = line[charIdx];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === delimiter && !inQuotes) {
+          values.push(currentVal.trim());
+          currentVal = "";
+        } else {
+          currentVal += char;
+        }
       }
+      values.push(currentVal.trim());
+
+      // Clean quoted values (strip surrounding quotes if any)
+      const cleanValues = values.map(v => {
+        if (v.startsWith('"') && v.endsWith('"')) {
+          return v.substring(1, v.length - 1).trim();
+        }
+        return v;
+      });
 
       if (!headerParsed) {
-        headers = values.map(h => h.toLowerCase().trim());
+        headers = cleanValues.map(h => h.toLowerCase().trim());
         headerParsed = true;
         logCollector.push({ type: "info", message: `Header fields parsed: [${headers.join(", ")}]` });
         continue;
@@ -80,7 +110,7 @@ const Parsers = {
 
       const rowObj = {};
       for (let j = 0; j < headers.length; j++) {
-        rowObj[headers[j]] = values[j] !== undefined ? values[j] : "";
+        rowObj[headers[j]] = cleanValues[j] !== undefined ? cleanValues[j] : "";
       }
       result.push(rowObj);
     }

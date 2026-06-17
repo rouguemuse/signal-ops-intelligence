@@ -711,8 +711,10 @@ const App = {
       else if (log.type === "warn") { colorClass = "text-warning"; prefix = "[WARN]"; }
       else if (log.type === "error") { colorClass = "text-danger"; prefix = "[ERROR]"; }
 
+      const time = log.timestamp || new Date().toTimeString().split(" ")[0];
+
       return `<div class="log-row ${colorClass}">
-        <span class="log-time">[${log.timestamp}]</span>
+        <span class="log-time">[${time}]</span>
         <span class="log-prefix">${prefix}</span>
         <span class="log-message">${log.message}</span>
       </div>`;
