@@ -5,7 +5,7 @@
 ![Privacy](https://img.shields.io/badge/Processing-Client%20Side-green)
 ![Tests](https://img.shields.io/badge/Tested-Yes-brightgreen)
 
-Imagine opening six different reports and trying to answer one simple question: *What should I fix first?*
+**Restaurant operators don’t need more reports. They need help knowing what to fix first.**
 
 Signal was built to solve that problem. It ingests inconsistent operational data, normalizes it into a common schema, validates quality, evaluates risk, and surfaces the highest-impact decisions with transparent reasoning and confidence scoring.
 
@@ -15,16 +15,9 @@ Signal was built to solve that problem. It ingests inconsistent operational data
 
 ## The Core Concept
 
-**Restaurant operations are simply the demonstration domain. The underlying architecture is applicable anywhere inconsistent data must be normalized, evaluated, and translated into explainable decisions.**
+Signal is a decision-intelligence engine that solves the "dashboard fatigue" common in multi-unit restaurant operations. By normalizing disparate reports (Point of Sale sales mix, payroll clock-ins, cash audits) into a unified operational schema, it runs deterministic evaluations to flag margin leaks, schedule compliance gaps, and cash risk.
 
-For example:
-* **AI Evaluation & LLM Safety**: Normalizing and grading model response logs, safety guardrail violations, and toxic triggers against fixed parameters.
-* **Data Annotation Audits**: Ingesting labeler logs to identify annotator bias and Z-score consensus drift.
-* **Talent Operations**: Standardizing interview scores, skill test ratios, and grading evaluations across hiring panels.
-* **Manufacturing Log-Drift**: Normalizing sensor metrics to flag calibration drift before tolerances are breached.
-* **Healthcare Operations**: Auditing scheduling slots and clinical compliance logs to highlight patient throughput bottlenecks.
-* **Compliance Auditing**: Normalizing security events, mapping logs to standard threat schemas, and flagging severity outliers.
-* **Customer Support QA**: Standardizing CSAT scores, hourly volumes, and response timing to isolate representative case outliers.
+The underlying architecture is built to ingest inconsistent inputs, evaluate risk based on confidence and severity metrics, and produce auditable decision support.
 
 ---
 
@@ -32,17 +25,17 @@ For example:
 
 Years of working in high-pressure operations taught me that organizations rarely fail because they lack data—they fail because they can't consistently interpret it. Signal was built to explore how deterministic evaluation frameworks can bridge that gap by making decisions more transparent, auditable, and actionable.
 
-By demonstrating how to normalize inconsistent inputs, validate quality, and surface explainable insights, the framework models how we can scale decision support across high-stakes domains—including AI evaluation, data annotation, and operational diagnostics.
+By demonstrating how to normalize inconsistent inputs, validate quality, and surface explainable insights, the framework models how we can scale decision support across high-stakes SaaS domains—including POS system integrations, labor optimization, and automated cash auditing.
 
 ---
 
 ## Lessons from Building Signal
 
-* **Data quality problems are often more important than model quality problems.** If the source data is corrupted, duplicate, or misaligned, even the most advanced evaluation heuristic will yield flawed recommendations.
-* **Confidence should be communicated alongside every recommendation.** An operator must know not just *what* the system suggests, but *how complete* and *stable* the underlying evidence is.
-* **Explainability is a feature, not an afterthought.** If a user cannot audit the mathematical formulas and triggered thresholds behind a finding, they will not trust the system to act.
+* **Data quality problems are often more important than business logic quality.** If the source POS data is corrupted, duplicate, or misaligned, even the most advanced scheduling rule will yield flawed recommendations.
+* **Confidence should be communicated alongside every recommendation.** An operator must know not just *what* the system suggests, but *how complete* and *stable* the underlying timecard or sales evidence is.
+* **Explainability is a feature, not an afterthought.** If a store manager cannot audit the mathematical formulas and triggered thresholds behind a labor variance, they will not trust the system to alter schedules.
 * **Humans make better decisions when ambiguity is structured rather than hidden.** Hiding operational complexities behind flat color status indicators degrades decision quality.
-* **Systems should accelerate judgment, not replace it.** The framework's role is to present evidence and suggest action protocols, leaving final executive discretion to the human operator.
+* **Systems should accelerate judgment, not replace it.** The framework's role is to present evidence and suggest action protocols, leaving final executive discretion to the general manager.
 
 ---
 
@@ -59,22 +52,22 @@ By demonstrating how to normalize inconsistent inputs, validate quality, and sur
 ## System Architecture
 
 ```text
-Raw Reports
+Raw Reports (Sales, Labor, Voids)
      │
      ▼
-Normalize
+Normalize (Fuzzy Alias Lookup)
      │
      ▼
-Validate
+Validate (Deduplicate & Bounds Cleanse)
      │
      ▼
-Evaluate
+Evaluate (Grader Heuristics & Rules)
      │
      ▼
-Prioritize
+Prioritize (Severity & Confidence Weights)
      │
      ▼
-Generate Report
+Generate Report (Print PDF / JSON / Markdown)
 ```
 
 ---
@@ -82,7 +75,7 @@ Generate Report
 ## An Actual Example
 
 ### 1. Raw Input
-Messy, raw CSV records are uploaded to the client sandbox:
+Messy, raw CSV records (e.g. from Toast POS timecards) are uploaded to the client sandbox:
 ```csv
 NET SALES,$12,305
 Labor Hours,108
@@ -152,19 +145,19 @@ The goal is not to present a flashy restaurant dashboard. The goal is to show ho
 
 ---
 
-## Why This Project Matters for AI Operations
+## Why This Architecture Matters for Enterprise Restaurant SaaS
 
-Signal demonstrates the same core skills required in AI evaluation and data-quality work: turning messy inputs into structured outputs, defining consistent evaluation criteria, identifying anomalies, documenting decision logic, and converting ambiguous information into repeatable workflows.
+Signal demonstrates the same core skills required to build data-quality pipelines and analytics modules for enterprise restaurant ERPs: turning messy, unstructured POS exports into structured outputs, defining consistent evaluation criteria, and documenting decision logic.
 
-| AI Evaluation Challenge | Signal Implementation Parallel | Source Reference |
+| Restaurant SaaS Challenge | Signal Implementation Parallel | Source Reference |
 | :--- | :--- | :--- |
-| **Parsing Drifting Outputs** | Heuristic column normalizer that maps varying POS formats to standard schema keys | [parsers.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/parsers.js) |
-| **Human-in-the-Loop Override**| Halts ingestion on ambiguous headers and prompts manual resolution via Mapping UI | [parsers.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/parsers.js) |
-| **Pipeline Telemetry** | Waterfall progress checklist auditing parsing, deduplication, range validity, and diagnostics | [app.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/app.js) |
-| **Deterministic Grading** | Implements standard metrics formulas (SPLH, COGS, contribution margin) | [diagnostics.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/diagnostics.js) |
-| **Grader Severity** | Multi-dimensional scoring framework: $S = \text{Financial} (1-5) + \text{Frequency} (1-5) + \text{Ops Risk} (1-5)$ | [evaluation.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/evaluation.js) |
-| **Grader Confidence** | Evaluator confidence: $C = \frac{\text{Completeness} + \text{Stability} + \text{Quality}}{3}$ | [evaluation.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/evaluation.js) |
-| **Explainable Audits** | "Explain this Finding" drawer displaying rules triggered and observed vs baseline margins | [app.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/app.js) |
+| **POS Schema Drift** | Heuristic column normalizer that maps varying POS formats (Toast, Clover, Aloha) to standard schema keys | [parsers.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/parsers.js) |
+| **Ambiguous Headers Override**| Halts ingestion on unmatched headers and prompts manual resolution via Mapping UI wizard | [parsers.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/parsers.js) |
+| **Ingestion Quality Audits** | Waterfall progress checklist auditing parsing, deduplication, range validity, and diagnostics | [app.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/app.js) |
+| **Deterministic KPI Grading** | Implements standard metrics formulas (SPLH, COGS, Prime Cost, contribution margin) | [diagnostics.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/diagnostics.js) |
+| **Severity Scoring Heuristics** | Multi-dimensional scoring framework: $S = \text{Financial} (1-5) + \text{Frequency} (1-5) + \text{Ops Risk} (1-5)$ | [evaluation.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/evaluation.js) |
+| **Decision Confidence Metrics** | Evaluator confidence rating: $C = \frac{\text{Completeness} + \text{Stability} + \text{Quality}}{3}$ | [evaluation.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/js/evaluation.js) |
+| **Operator Audit Logs** | "Explain this Finding" drawer displaying rules triggered and observed vs baseline margins | [app.js](file:///C:/Users/threa/.gemini/antigravity/scratch/signal-ops-intelligence/app.js) |
 
 ---
 
@@ -271,7 +264,8 @@ node tests/run-tests.js
 │   ├── privacy-model.md
 │   └── ai-evaluation-relevance.md
 ├── .gitignore
-└── LICENSE (Custom Portfolio Only)
+├── LICENSE (Custom Portfolio Only)
+└── CASE_STUDY.md
 ```
 
 ---
