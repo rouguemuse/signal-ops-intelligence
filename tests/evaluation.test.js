@@ -45,6 +45,23 @@ const EvaluationTests = {
     assertEqual(evaluationOutput.healthScore, 89, "System health score formula audit");
     logs.push("✓ System health score calculation formula validated");
 
+    // Test Single-Server Void Evaluation
+    const singleServerDiagnostics = {
+      salesMix: { summary: { averageCM: 10.00 }, items: [] },
+      labor: { intervals: [] },
+      voids: {
+        summary: { totalSalesChecked: 1000, totalVoids: 50, averageVoidPercent: 5.0 },
+        servers: [
+          { serverName: "Solo Cashier", netSales: 1000, voidAmount: 50, ticketCount: 20, voidPercent: 5.0, isAnomaly: true, peerMean: 2.0, peerStdDev: 0.0, zScore: 0.0 }
+        ]
+      }
+    };
+    const evalSingleVoid = Evaluation.evaluate(singleServerDiagnostics, mockQuality);
+    assertEqual(evalSingleVoid.recommendations.length, 1, "Should evaluate single server void anomaly without error");
+    assertEqual(evalSingleVoid.recommendations[0].estWeeklySavings, 30.00, "Excess voids = 50 - (1000 * 0.02) = $30.00");
+    assertAlmostEqual(evalSingleVoid.recommendations[0].confidenceBreakdown.total, 5.0, 0.1, "Single server void confidence");
+    logs.push("✓ Single-server void recommendation evaluated defensibly without NaN");
+
     return logs;
   }
 };

@@ -65,9 +65,9 @@ const Evaluation = {
               },
               explainStats: {
                 observed: `$${currentMargin.toFixed(2)} contribution margin`,
-                baseline: `$${salesMix.summary.averageCM.toFixed(2)} average margin`,
-                deviation: `${Math.round(((salesMix.summary.averageCM - currentMargin) / salesMix.summary.averageCM) * 100)}% lower`,
-                threshold: `Item volume share ${item.salesMixPercent.toFixed(1)}% (Cutoff is ${salesMix.summary.popularityThresholdPercent.toFixed(1)}%)`,
+                baseline: `$${(salesMix.summary && typeof salesMix.summary.averageCM === 'number') ? salesMix.summary.averageCM.toFixed(2) : currentMargin.toFixed(2)} average margin`,
+                deviation: `${(salesMix.summary && salesMix.summary.averageCM > 0) ? Math.round(((salesMix.summary.averageCM - currentMargin) / salesMix.summary.averageCM) * 100) : 0}% lower`,
+                threshold: `Item volume share ${item.salesMixPercent.toFixed(1)}% (Cutoff is ${((salesMix.summary && typeof salesMix.summary.popularityThresholdPercent === 'number') ? salesMix.summary.popularityThresholdPercent : ((0.70 * (1 / (salesMix.items.length || 1))) * 100)).toFixed(1)}%)`,
                 rulesTriggered: ["Rule-22: Smith-Kasavana popularity cutoff breach", "Rule-23: Contribution margin average gap"]
               },
               actionPlan: `Re-engineer the recipe to target a 25% food cost ($${targetCost.toFixed(2)} cost target) or replace the item in the active layout to reduce prep labor.`,
@@ -91,7 +91,21 @@ const Evaluation = {
           if (excess > 0) weeklyLaborLeakageCost += excess;
         });
 
-        const weeklySavings = Math.round((weeklyLaborLeakageCost * 3.5) * 100) / 100; // Extrapolated from 2 days
+        // Determine actual date span represented by labor intervals
+        let daysCovered = 1;
+        const validDates = labor.intervals
+          .map(i => i.timestamp ? new Date(i.timestamp).toDateString() : null)
+          .filter(Boolean);
+        const uniqueDays = new Set(validDates);
+        if (uniqueDays.size > 0) {
+          daysCovered = uniqueDays.size;
+        } else if (labor.intervals.length > 0) {
+          // Fallback: estimate days from 12 operating hours/day
+          daysCovered = Math.max(1, Math.round(labor.intervals.length / 12));
+        }
+
+        const weeklyExtrapolationFactor = daysCovered < 7 ? (7 / daysCovered) : 1;
+        const weeklySavings = Math.round((weeklyLaborLeakageCost * weeklyExtrapolationFactor) * 100) / 100;
 
         if (weeklySavings > 0) {
           const financialScore = this.calculateFinancialScore(weeklySavings);
@@ -177,12 +191,18 @@ const Evaluation = {
             const qualityVal = 5;
             const confidenceScore = Math.round(((completenessVal + stabilityVal + qualityVal) / 3) * 10) / 10;
 
+            const isPeerGroup = typeof srv.peerStdDev === "number" && srv.peerStdDev > 0;
+            const peerMeanVal = typeof srv.peerMean === "number" ? srv.peerMean : 2.0;
+            const desc = isPeerGroup
+              ? `Server ${srv.serverName} void rate of ${srv.voidPercent.toFixed(1)}% represents a +${srv.zScore.toFixed(1)}σ deviation from the team average of ${peerMeanVal.toFixed(1)}%.`
+              : `Server ${srv.serverName} void rate of ${srv.voidPercent.toFixed(1)}% exceeds the baseline operational threshold of ${peerMeanVal.toFixed(1)}%.`;
+
             evaluationsList.push({
               id: `void-anomaly-${srv.serverName.replace(/\s+/g, '-').toLowerCase()}`,
               ruleId: "Rule-31",
               category: "Operational Audit",
               title: `Server Transaction Void Outlier: ${srv.serverName}`,
-              description: `Server ${srv.serverName} void rate of ${srv.voidPercent.toFixed(1)}% represents a +${srv.zScore.toFixed(1)}σ deviation from the team average of ${srv.peerMean.toFixed(1)}%.`,
+              description: desc,
               severityBreakdown: {
                 financial: financialScore,
                 frequency: frequencyScore,
@@ -199,10 +219,12 @@ const Evaluation = {
               },
               explainStats: {
                 observed: `${srv.voidPercent.toFixed(2)}% server void rate`,
-                baseline: `${srv.peerMean.toFixed(2)}% peer void average`,
-                deviation: `+${srv.zScore.toFixed(2)} standard deviations (z-score)`,
-                threshold: `Anomaly threshold: z-score >= 1.5`,
-                rulesTriggered: ["Rule-31: Server void deviation cutoff", "Rule-32: Compliance integrity warning"]
+                baseline: `${peerMeanVal.toFixed(2)}% ${isPeerGroup ? "peer void average" : "industry standard baseline"}`,
+                deviation: isPeerGroup ? `+${srv.zScore.toFixed(2)} standard deviations (z-score)` : `${(srv.voidPercent - peerMeanVal).toFixed(2)}% above baseline`,
+                threshold: isPeerGroup ? `Anomaly threshold: z-score >= 1.5` : `Anomaly threshold: void rate > 4.0%`,
+                rulesTriggered: isPeerGroup
+                  ? ["Rule-31: Server void deviation cutoff", "Rule-32: Compliance integrity warning"]
+                  : ["Rule-31: Single-server baseline cutoff", "Rule-32: Compliance integrity warning"]
               },
               actionPlan: `Require manager PIN input for all checks voided or comped after receipt submission. Conduct a weekly override transaction audit on ${srv.serverName}'s checks.`,
               estWeeklySavings: weeklyExcessVoids,

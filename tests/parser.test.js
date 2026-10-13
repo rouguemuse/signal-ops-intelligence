@@ -32,7 +32,27 @@ const ParserTests = {
     
     // Missing labor cost interpolation (4.5 hours * $19.00 blended rate = $85.50)
     assertEqual(cleaned[0].laborCost, 85.50, "Missing labor cost must be interpolated");
-    logs.push("✓ Cleanser successfully corrected negative numbers & interpolated missing fields");
+    // Test 3: Quoted currency and comma thousands separator parsing
+    const rawSalesCSV = `product_name,dept_group,qty_sold,net_revenue_total,recipe_cost,retail_price
+"Truffle Burger",Entrees,"1,250","$18,750.00","$6.50","$15.00"`;
+    const cleanedSales = Parsers.process(rawSalesCSV, "salesMix", testLogs);
+    assertEqual(cleanedSales[0].quantity, 1250, "Quoted volume with comma thousands separator must parse to integer 1250");
+    assertEqual(cleanedSales[0].sales, 18750.00, "Quoted revenue with currency and comma must parse to float 18750.00");
+    assertEqual(cleanedSales[0].itemCost, 6.50, "Quoted item cost must parse to 6.50");
+    logs.push("✓ Quoted numbers with currency symbols and comma separators parsed accurately");
+
+    // Test 4: Missing required columns should throw structured MappingError
+    let threwMappingError = false;
+    try {
+      const incompleteCSV = `unrelated_col1,unrelated_col2\nfoo,bar`;
+      Parsers.process(incompleteCSV, "salesMix", testLogs);
+    } catch (err) {
+      if (err.name === "MappingError" && err.missingKeys && err.missingKeys.length > 0) {
+        threwMappingError = true;
+      }
+    }
+    assertEqual(threwMappingError, true, "Missing required headers must throw MappingError");
+    logs.push("✓ Ingestion halted on missing headers with structured MappingError");
 
     return logs;
   }

@@ -187,6 +187,20 @@ const Parsers = {
   },
 
   /**
+   * Helper to safely parse numeric values with comma thousands separators and currency symbols
+   */
+  cleanNumeric(val) {
+    if (val === null || val === undefined) return NaN;
+    if (typeof val === "number") return val;
+    let str = String(val).trim();
+    if (!str || str === "N/A" || str === "null" || str === "undefined") return NaN;
+    // Remove dollar signs, percent signs, and comma thousands separators
+    str = str.replace(/[$,\s]/g, "");
+    const parsed = parseFloat(str);
+    return Number.isFinite(parsed) ? parsed : NaN;
+  },
+
+  /**
    * Applies normalization, type casting, duplicate removal, and data quality scoring
    */
   cleanAndNormalize(rawRows, headerMap, schemaType, logCollector = []) {
@@ -216,29 +230,35 @@ const Parsers = {
           continue;
         }
 
-        normalizedRow.quantity = parseInt(normalizedRow.quantity, 10);
-        if (isNaN(normalizedRow.quantity)) {
+        const parsedQty = this.cleanNumeric(normalizedRow.quantity);
+        if (isNaN(parsedQty)) {
           logCollector.push({ type: "warn", message: `Row ${i + 1}: Invalid volume "${rawRow[headerMap.quantity]}". Defaulted to 0.` });
           normalizedRow.quantity = 0;
           invalidNumbersCount++;
+        } else {
+          normalizedRow.quantity = Math.round(parsedQty);
         }
 
-        normalizedRow.price = parseFloat(normalizedRow.price);
-        if (isNaN(normalizedRow.price) || normalizedRow.price <= 0) {
+        const parsedPrice = this.cleanNumeric(normalizedRow.price);
+        if (isNaN(parsedPrice) || parsedPrice <= 0) {
           logCollector.push({ type: "warn", message: `Row ${i + 1}: Invalid retail price. Defaulted to 10.00.` });
           normalizedRow.price = 10.00;
           invalidNumbersCount++;
+        } else {
+          normalizedRow.price = parsedPrice;
         }
 
-        normalizedRow.sales = parseFloat(normalizedRow.sales);
-        if (isNaN(normalizedRow.sales)) {
-          normalizedRow.sales = normalizedRow.quantity * normalizedRow.price;
+        const parsedSales = this.cleanNumeric(normalizedRow.sales);
+        if (isNaN(parsedSales)) {
+          normalizedRow.sales = Math.round(normalizedRow.quantity * normalizedRow.price * 100) / 100;
           missingFieldsCount++;
+        } else {
+          normalizedRow.sales = parsedSales;
         }
 
         const rawCost = normalizedRow.itemCost;
-        normalizedRow.itemCost = parseFloat(rawCost);
-        if (isNaN(normalizedRow.itemCost) || rawCost === "N/A") {
+        const parsedCost = this.cleanNumeric(rawCost);
+        if (isNaN(parsedCost)) {
           const interpolatedCost = Math.round((normalizedRow.price * 0.30) * 100) / 100;
           normalizedRow.itemCost = interpolatedCost;
           missingFieldsCount++;
@@ -246,6 +266,8 @@ const Parsers = {
             type: "warn", 
             message: `Row ${i + 1} (${normalizedRow.itemName}): Missing cost. Interpolated to default COGS average ($${interpolatedCost.toFixed(2)}).` 
           });
+        } else {
+          normalizedRow.itemCost = parsedCost;
         }
       } 
       
@@ -263,36 +285,42 @@ const Parsers = {
         }
         seenKeys.add(normalizedRow.timestamp);
 
-        normalizedRow.sales = parseFloat(normalizedRow.sales);
-        if (isNaN(normalizedRow.sales)) {
+        const parsedSales = this.cleanNumeric(normalizedRow.sales);
+        if (isNaN(parsedSales)) {
           normalizedRow.sales = 0.00;
           invalidNumbersCount++;
+        } else {
+          normalizedRow.sales = parsedSales;
         }
 
-        normalizedRow.laborHours = parseFloat(normalizedRow.laborHours);
-        if (isNaN(normalizedRow.laborHours)) {
+        const parsedHours = this.cleanNumeric(normalizedRow.laborHours);
+        if (isNaN(parsedHours)) {
           normalizedRow.laborHours = 0.0;
           invalidNumbersCount++;
-        } else if (normalizedRow.laborHours < 0) {
-          const correctedHours = Math.abs(normalizedRow.laborHours);
+        } else if (parsedHours < 0) {
+          const correctedHours = Math.abs(parsedHours);
           normalizedRow.laborHours = correctedHours;
           invalidNumbersCount++;
           logCollector.push({ 
             type: "warn", 
             message: `Row ${i + 1} (${normalizedRow.timestamp}): Negative labor hours corrected to absolute value (${correctedHours}).` 
           });
+        } else {
+          normalizedRow.laborHours = parsedHours;
         }
 
         const rawLaborCost = normalizedRow.laborCost;
-        normalizedRow.laborCost = parseFloat(rawLaborCost);
-        if (isNaN(normalizedRow.laborCost) || !rawLaborCost) {
+        const parsedCost = this.cleanNumeric(rawLaborCost);
+        if (isNaN(parsedCost)) {
           const interpolatedCost = Math.round((normalizedRow.laborHours * 19.00) * 100) / 100;
           normalizedRow.laborCost = interpolatedCost;
           missingFieldsCount++;
           logCollector.push({ 
             type: "warn", 
-            message: `Row ${i + 1} (${normalizedRow.timestamp}): Missing cost. Interpolated to average wage base ($$19.00/hr) -> $${interpolatedCost.toFixed(2)}.` 
+            message: `Row ${i + 1} (${normalizedRow.timestamp}): Missing cost. Interpolated to average wage base ($19.00/hr) -> $${interpolatedCost.toFixed(2)}.` 
           });
+        } else {
+          normalizedRow.laborCost = parsedCost;
         }
       } 
       
@@ -309,16 +337,20 @@ const Parsers = {
           missingFieldsCount++;
         }
 
-        normalizedRow.ticketTotal = parseFloat(normalizedRow.ticketTotal);
-        if (isNaN(normalizedRow.ticketTotal)) {
+        const parsedTicket = this.cleanNumeric(normalizedRow.ticketTotal);
+        if (isNaN(parsedTicket)) {
           normalizedRow.ticketTotal = 0.00;
           invalidNumbersCount++;
+        } else {
+          normalizedRow.ticketTotal = parsedTicket;
         }
 
-        normalizedRow.voidAmount = parseFloat(normalizedRow.voidAmount);
-        if (isNaN(normalizedRow.voidAmount)) {
+        const parsedVoid = this.cleanNumeric(normalizedRow.voidAmount);
+        if (isNaN(parsedVoid)) {
           normalizedRow.voidAmount = 0.00;
           invalidNumbersCount++;
+        } else {
+          normalizedRow.voidAmount = parsedVoid;
         }
       }
 

@@ -16,6 +16,9 @@ const BrowserTestRunner = {
     };
 
     const assertAlmostEqual = (actual, expected, tolerance = 0.05, message) => {
+      if (typeof actual !== "number" || !Number.isFinite(actual)) {
+        throw new Error(`Expected finite number near ${expected} but got ${actual}. (${message})`);
+      }
       if (Math.abs(actual - expected) > tolerance) {
         throw new Error(`Expected ${expected} (+/- ${tolerance}) but got ${actual}. (${message})`);
       }

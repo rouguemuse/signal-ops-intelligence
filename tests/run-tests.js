@@ -19,6 +19,10 @@ function assertEqual(actual, expected, message) {
 }
 
 function assertAlmostEqual(actual, expected, tolerance = 0.05, message) {
+  if (typeof actual !== "number" || !Number.isFinite(actual)) {
+    console.error(`\x1b[31m[FAIL] Assertion Failed: Value is not a finite number: got ${actual}\x1b[0m`);
+    throw new Error(message || "Non-finite numeric value");
+  }
   if (Math.abs(actual - expected) > tolerance) {
     console.error(`\x1b[31m[FAIL] Assertion Failed: Expected ${expected} (+/- ${tolerance}), got ${actual}\x1b[0m`);
     throw new Error(message || "Tolerance failure");

@@ -54,6 +54,24 @@ const DiagnosticsTests = {
     assertEqual(srvMap["Server 1"].isAnomaly, false, "Server 1 normal flag");
     logs.push("✓ Server transaction void outlier Z-score flags verified");
 
+    // Test 4: Single-server void baseline handling (no division by zero, peerMean = 2.0%)
+    const singleServerRecord = [
+      { serverName: "Solo Server", ticketTotal: 1000.00, voidAmount: 50.00 } // 5.0%
+    ];
+    const singleDiag = Diagnostics.analyzeVoids(singleServerRecord);
+    assertEqual(singleDiag.servers[0].peerMean, 2.0, "Single-server should default to 2.0% industry standard baseline");
+    assertEqual(singleDiag.servers[0].isAnomaly, true, "Single server with 5.0% void rate should trigger anomaly (>4.0%)");
+    logs.push("✓ Single-server void outlier baseline fallback verified");
+
+    // Test 5: Zero sales interval with labor clocked (no division by zero, flags leakage)
+    const zeroSalesLabor = [
+      { timestamp: "2026-06-02T15:00:00", sales: 0.00, laborHours: 3.0, laborCost: 57.00 }
+    ];
+    const zeroLaborDiag = Diagnostics.analyzeLabor(zeroSalesLabor);
+    assertEqual(zeroLaborDiag.intervals[0].isLeakage, true, "Clocked labor with zero sales must be flagged as leakage");
+    assertEqual(zeroLaborDiag.intervals[0].splh, 0, "SPLH with zero sales must be 0");
+    logs.push("✓ Zero-sales labor interval leakage flag validated");
+
     return logs;
   }
 };

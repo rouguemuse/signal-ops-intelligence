@@ -98,10 +98,11 @@ const Diagnostics = {
     const baselineSales = 150.00; 
 
     const processedIntervals = intervals.map(hour => {
-      const laborPercent = hour.sales > 0 ? (hour.laborCost / hour.sales) * 100 : 0;
+      const laborPercent = hour.sales > 0 ? (hour.laborCost / hour.sales) * 100 : (hour.laborCost > 0 ? 100.0 : 0);
       const splh = hour.laborHours > 0 ? hour.sales / hour.laborHours : 0;
       
-      const isLeakage = laborPercent > 45 && hour.sales < baselineSales && hour.laborHours > 2.0;
+      const isLeakage = (hour.sales === 0 && hour.laborHours >= 1.0 && hour.laborCost > 0) || 
+                        (laborPercent > 45 && hour.sales < baselineSales && hour.laborHours > 2.0);
 
       return {
         ...hour,
@@ -184,7 +185,9 @@ const Diagnostics = {
       zScoresComputed = serverList.map(srv => ({
         ...srv,
         zScore: 0.0,
-        isAnomaly: srv.voidPercent > 4.0 // Flat threshold fallback for single-server lists
+        isAnomaly: srv.voidPercent > 4.0, // Flat threshold fallback for single-server lists
+        peerMean: 2.0, // Industry standard baseline void rate (2.0%) when no peer group exists
+        peerStdDev: 0.0
       }));
     }
 
